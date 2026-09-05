@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Sign_UP = () => {
     const [Name, setName] = useState("");
@@ -6,6 +7,7 @@ const Sign_UP = () => {
     const [Role, setRole] = useState("");
     const [Message, setMessage] = useState("")
     const [AC, setAC] = useState("")
+    const navigate = useNavigate();
 
 
     const HandleSubmit = async (e) => {
@@ -27,12 +29,16 @@ const Sign_UP = () => {
             })
             const res = await response.json()
             setMessage(res.message)
+            if (res.message === "Sign up successful") {
+                navigate("/products")
+            }
         } catch (error) {
             console.log(error)
         }
 
         setName("")
         setEmail("")
+        setAC("")
 
     }
 
@@ -41,6 +47,7 @@ const Sign_UP = () => {
         <div className="flex justify-center items-center  h-screen">
             <form onSubmit={HandleSubmit} className="flex flex-col gap-4 p-4">
                 <input
+                    required
                     value={Name}
                     onChange={(e) => {
                         setName(e.target.value);
@@ -50,6 +57,7 @@ const Sign_UP = () => {
                     className="border border-gray-300 rounded px-4 py-2 mb-4 w-full"
                 />
                 <input
+                    required
                     value={Email}
                     onChange={(e) => {
                         setEmail(e.target.value);

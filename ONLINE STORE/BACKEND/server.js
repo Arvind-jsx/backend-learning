@@ -142,6 +142,25 @@ const products = [
   },
 ];
 
+app.get("/products", (req, res) => {
+  const { cat, brand } = req.query;
+  const filteredProducts = products.filter((product) => {
+    if (cat && brand) {
+      return product.category === cat && product.brand === brand;
+    }
+    if (cat) {
+      return product.category === cat;
+    }
+    if (brand) {
+      return product.brand === brand;
+    }
+  });
+  res.json(filteredProducts);
+
+  
+
+});
+
 const ACCESS_CODE = "ADMIN123";
 
 const NameValidation = (req, res, next) => {
@@ -161,11 +180,9 @@ const AccessCodeValidation = (req, res, next) => {
   next();
 };
 
-app.post("signup", NameValidation, AccessCodeValidation, (req, res) => {
+app.post("/signup", NameValidation, AccessCodeValidation, (req, res) => {
   res.json({ message: "Sign up successful" });
 });
-
-
 
 app.listen(5000, () => {
   console.log("Server is running on port 5000");
