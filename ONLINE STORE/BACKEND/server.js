@@ -144,21 +144,22 @@ const products = [
 
 app.get("/products", (req, res) => {
   const { cat, brand } = req.query;
-  const filteredProducts = products.filter((product) => {
-    if (cat && brand) {
-      return product.category === cat && product.brand === brand;
-    }
-    if (cat) {
-      return product.category === cat;
-    }
-    if (brand) {
-      return product.brand === brand;
-    }
-  });
+
+  const filteredProducts = products.filter(
+    (product) =>
+      (!cat || product.category === cat) && (!brand || product.brand === brand),
+  );
+
   res.json(filteredProducts);
+});
 
-  
-
+app.get("/product/:id", (req, res) => {
+  const { id } = req.params;
+  const product = products.find((p) => p.id === parseInt(id));
+  if (!product) {
+    return res.status(404).json({ message: "Product not found" });
+  }
+  res.json(product);
 });
 
 const ACCESS_CODE = "ADMIN123";

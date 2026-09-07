@@ -30,7 +30,9 @@ const Sign_UP = () => {
             const res = await response.json()
             setMessage(res.message)
             if (res.message === "Sign up successful") {
-                navigate("/products")
+                navigate("/products", {
+                    state: { user: { name: Name, role: Role } }
+                })
             }
         } catch (error) {
             console.log(error)
