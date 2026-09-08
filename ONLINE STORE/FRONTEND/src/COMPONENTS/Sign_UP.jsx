@@ -46,7 +46,7 @@ const Sign_UP = () => {
 
 
     return (
-        <div className="flex justify-center items-center  h-screen">
+        <div className=" flex justify-center items-center  h-screen">
             <form onSubmit={HandleSubmit} className="flex flex-col gap-4 p-4">
                 <input
                     required

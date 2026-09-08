@@ -153,6 +153,40 @@ app.get("/products", (req, res) => {
   res.json(filteredProducts);
 });
 
+const ProductsValidation = (req, res, next) => {
+  const ProductName = req.body.productName;
+  const ProductPrice = req.body.price;
+  const ProductBrand = req.body.brand;
+  const ProductCategory = req.body.category;
+  const ProductDetails = req.body.details;
+
+  if (
+    !ProductName ||
+    !ProductPrice ||
+    !ProductBrand ||
+    !ProductCategory ||
+    !ProductDetails
+  ) {
+    res.json({ message: "Please fill all the fields" });
+    return;
+  }
+  next();
+};
+
+app.post("/products", ProductsValidation, (req, res) => {
+  const { productName, brand, category, price, details } = req.body;
+  const newProduct = {
+    id: products.length + 1,
+    name: productName,
+    brand: brand,
+    category: category,
+    price: price,
+    details: details,
+  };
+  products.push(newProduct);
+  res.json({ message: "Product added successfully" });
+});
+
 app.get("/product/:id", (req, res) => {
   const { id } = req.params;
   const product = products.find((p) => p.id === parseInt(id));

@@ -39,7 +39,7 @@ const ProductsDetails = () => {
           <h2 className="text-xl font-bold">{product.name}</h2>
           <p className="text-lg font-semibold">Brand: {product.brand}</p>
           <p className="text-md">Category: {product.category}</p>
-          <p className="text-2xl font-bold">${product.price.toFixed(2)}</p>
+          <p className="text-2xl font-bold">${product.price}</p>
           <p className="text-gray-600">{product.details}</p>
         </div>
       )}
