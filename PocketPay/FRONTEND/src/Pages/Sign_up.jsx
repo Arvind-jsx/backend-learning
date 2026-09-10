@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const Sign_up = () => {
     const [Name, setName] = useState("");
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
     const [Message, setMessage] = useState("");
+    const navigate = useNavigate()
 
     const HandleSubmit = async (e) => {
         e.preventDefault();
@@ -22,13 +24,14 @@ const Sign_up = () => {
                 },
                 body: JSON.stringify(user),
             });
-            const res = response.json();
+            const res = await response.json();
             setMessage(res.message);
         } catch (error) {
             console.log(error);
         }
 
-        setMessage("");
+        navigate("/home")
+
     };
 
     return (
@@ -121,12 +124,11 @@ const Sign_up = () => {
                                 id="password"
                                 name="password"
                                 placeholder="Create a password"
-                                minLength="8"
                                 required
                             />
                         </div>
                     </div>
-                    <p>{Message ? Message : ""}</p>
+                    <p className=" text-red-500 text-[10px] ">{Message ? Message : ""}</p>
                     <button
                         className="group relative overflow-hidden rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/25 transition duration-300 hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-xl hover:shadow-emerald-600/30 focus:outline-none focus:ring-4 focus:ring-emerald-500/25 active:translate-y-0"
                         type="submit"

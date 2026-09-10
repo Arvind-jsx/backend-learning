@@ -7,23 +7,55 @@ app.use(express.json());
 
 const users = [];
 
-// const InputsValidation = (req,res,next)=>{
-  
-// }
+const InputsValidation = (req, res, next) => {
+  const name = req.body.name;
+  const email = req.body.email;
 
-app.post("/signup", (req, res) => {
+  if (!name || !email) {
+    const err = new Error("Please Input All The Fields");
+    err.status = 400;
+    return next(err);
+  }
+  next();
+};
+
+const PasswordValidation = (req, res, next) => {
+  const pass = req.body.password;
+  const MIN_LENGTH = 6;
+  if (!pass || pass.length < MIN_LENGTH) {
+    const err = new Error("Password Must Be 6 Characters Long");
+    err.status = 400;
+    return next(err);
+  }
+  next();
+};
+
+app.post("/signup", InputsValidation, PasswordValidation, (req, res) => {
   const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
+  const id = Math.floor(Math.random() * 9000) + 1000;
+  const balance = 1000;
 
   const user = {
     name: name,
     email: email,
     password: password,
+    id: id,
+    balance: balance,
   };
 
   users.push(user);
+  res.status(201).json({ message: "User Created Successfully" });
 });
+
+const errMiddleware = (err, req, res, next) => {
+  res.status(err.status).json({
+    message: err.message,
+  });
+};
+
+app.use(errMiddleware);
 
 app.listen(5000, () => {
   console.log("server is running.....");
