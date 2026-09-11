@@ -49,8 +49,32 @@ app.post("/signup", InputsValidation, PasswordValidation, (req, res) => {
   res.status(201).json({ message: "User Created Successfully" });
 });
 
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  const user = users.find(
+    (storedUser) => storedUser.email === email && storedUser.password === password,
+  );
+
+  if (!user) {
+    return res.status(401).json({ message: "Invalid email or password" });
+  }
+
+  res.json({ message: "Login successful", email: user.email });
+});
+
+app.get("/profile", (req, res) => {
+  const email = req.query.email;
+  const user = users.find((user) => user.email === email);
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.json(user);
+});
+
 const errMiddleware = (err, req, res, next) => {
-  res.status(err.status).json({
+  res.status(err.status || 500).json({
     message: err.message,
   });
 };
