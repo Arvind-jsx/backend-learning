@@ -1,6 +1,53 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useUser } from "../context/useUser";
 
 const HomePage = () => {
+  const { currentUser } = useUser();
+  const [Amount, setAmount] = useState("");
+  const [UserID, setUserID] = useState("");
+  const [Message, setMessage] = useState("");
+  const [MessageType, setMessageType] = useState("");
+
+  const SubmitPayment = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setMessageType("");
+
+    if (!currentUser) {
+      setMessage("Please log in again before making a payment.");
+      setMessageType("error");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/payments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: Amount,
+          userId: UserID,
+          senderId: currentUser.id,
+        }),
+      });
+
+      const res = await response.json();
+      if (!response.ok) {
+        throw new Error(res.message || "Failed to submit payment");
+      }
+
+      setMessage(res.message || "Payment submitted successfully");
+      setMessageType("success");
+      console.log("Payment submitted successfully:", res);
+    } catch (error) {
+      setMessage(error.message || "Unable to submit payment");
+      setMessageType("error");
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-white/10 bg-emerald-950/80 px-5 py-4 backdrop-blur sm:px-8">
@@ -42,7 +89,10 @@ const HomePage = () => {
             </p>
           </div>
 
-          <form className="rounded-3xl border border-white/10 bg-white p-6 text-slate-900 shadow-2xl animate-fade-up shadow-black/25 sm:p-8">
+          <form
+            className="rounded-3xl border border-white/10 bg-white p-6 text-slate-900 shadow-2xl animate-fade-up shadow-black/25 sm:p-8"
+            onSubmit={SubmitPayment}
+          >
             <div className="mb-7">
               <p className="text-sm font-semibold text-emerald-600">
                 New payment
@@ -68,6 +118,8 @@ const HomePage = () => {
                     id="amount"
                     name="amount"
                     type="number"
+                    value={Amount}
+                    onChange={(e) => setAmount(e.target.value)}
                     min="0"
                     step="0.01"
                     placeholder="0.00"
@@ -87,6 +139,8 @@ const HomePage = () => {
                 <input
                   id="user-id"
                   name="userId"
+                  value={UserID}
+                  onChange={(e) => setUserID(e.target.value)}
                   type="text"
                   placeholder="Enter user ID"
                   required
@@ -94,6 +148,15 @@ const HomePage = () => {
                 />
               </div>
             </div>
+
+            <p
+              className={`text-[10px] ${MessageType === "success" ? "text-emerald-600" : "text-red-500"
+                }`}
+              role="status"
+            >
+              {Message}
+            </p>
+
 
             <button
               type="submit"

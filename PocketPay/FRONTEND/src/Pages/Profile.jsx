@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mosaic } from "react-loading-indicators";
+import { useUser } from "../context/useUser";
 
 const Profile = () => {
   const email = localStorage.getItem("userEmail");
   const navigate = useNavigate();
+  const { setCurrentUser } = useUser();
   const [Data, setData] = useState(null);
   const [Loading, setLoading] = useState(true);
   const [errorMessage, setError] = useState("");
 
   const handleSignOut = () => {
     localStorage.removeItem("userEmail");
+    setCurrentUser(null);
     navigate("/");
   };
 

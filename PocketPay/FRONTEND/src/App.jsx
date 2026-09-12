@@ -8,13 +8,13 @@ import HistoryPage from "./Pages/HistoryPage";
 const App = () => {
   return (
     <>
-      <Routes>
-        <Route path="/" element={<Sign_up />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/history" element={<HistoryPage />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Sign_up />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/history" element={<HistoryPage />} />
+        </Routes>
     </>
   );
 };

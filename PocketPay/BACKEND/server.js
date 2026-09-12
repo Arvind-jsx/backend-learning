@@ -46,20 +46,29 @@ app.post("/signup", InputsValidation, PasswordValidation, (req, res) => {
   };
 
   users.push(user);
-  res.status(201).json({ message: "User Created Successfully" });
+  res.status(201).json({ message: "User Created Successfully", user: user });
 });
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
   const user = users.find(
-    (storedUser) => storedUser.email === email && storedUser.password === password,
+    (storedUser) =>
+      storedUser.email === email && storedUser.password === password,
   );
 
   if (!user) {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  res.json({ message: "Login successful", email: user.email });
+  res.json({
+    message: "Login successful",
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      balance: user.balance,
+    },
+  });
 });
 
 app.get("/profile", (req, res) => {
@@ -73,11 +82,53 @@ app.get("/profile", (req, res) => {
   res.json(user);
 });
 
+const paymentsValidation = (req, res, next) => {
+  const amount = Number(req.body.amount);
+  const userid = Number(req.body.userId);
+
+  if (!Number.isFinite(amount) || amount <= 0 || !Number.isInteger(userid)) {
+    const err = new Error("Please Fill The Inputs");
+    err.status = 400;
+    return next(err);
+  }
+  next();
+};
+
 const errMiddleware = (err, req, res, next) => {
   res.status(err.status || 500).json({
     message: err.message,
   });
 };
+
+const transactionHistory = [];
+
+app.post("/payments", paymentsValidation, (req, res) => {
+  const senderId = Number(req.body.senderId);
+  const receiverID = Number(req.body.userId);
+  const amount = Number(req.body.amount);
+
+  const sender = users.find((user) => user.id === senderId);
+  const receiver = users.find((user) => user.id === receiverID);
+
+  if (!sender || !receiver) {
+    return res.status(404).json({ message: "Sender or receiver not found" });
+  }
+
+  if (sender.balance < amount) {
+    return res.status(400).json({ message: "Insufficient balance" });
+  }
+
+  sender.balance -= amount;
+  receiver.balance += amount;
+
+  res.json({ message: "Payment successful" });
+  transactionHistory.push({
+    senderId: sender.id,
+    receiverId: receiver.id,
+    amount: amount,
+    timestamp: new Date(),
+  });
+});
 
 app.use(errMiddleware);
 

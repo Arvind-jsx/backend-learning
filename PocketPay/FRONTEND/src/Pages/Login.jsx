@@ -1,10 +1,12 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../context/useUser";
 
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setCurrentUser } = useUser();
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [Message, setMessage] = useState("");
@@ -25,7 +27,8 @@ const Login = () => {
         throw new Error(res.message || "Unable to log in");
       }
 
-      localStorage.setItem("userEmail", res.email);
+      setCurrentUser(res.user);
+  localStorage.setItem("userEmail", res.user.email);
       navigate("/home");
     } catch (error) {
       setMessage(error.message);

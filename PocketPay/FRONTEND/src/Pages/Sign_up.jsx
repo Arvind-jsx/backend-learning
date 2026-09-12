@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../context/useUser";
 
 const Sign_up = () => {
+  const { setCurrentUser } = useUser();
   const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
@@ -27,6 +29,7 @@ const Sign_up = () => {
       if (!response.ok) {
         throw new Error(res.message || "Unable to create account");
       }
+      setCurrentUser(res.user);
 
       localStorage.setItem("userEmail", Email.trim());
       navigate("/home");
