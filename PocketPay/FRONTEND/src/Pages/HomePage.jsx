@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "../context/useUser";
+import PaymentSuccess from "./PaymentSuccess";
 
 const HomePage = () => {
   const { currentUser } = useUser();
@@ -47,7 +48,6 @@ const HomePage = () => {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-slate-950 text-white">
       <header className="border-b border-white/10 bg-emerald-950/80 px-5 py-4 backdrop-blur sm:px-8">
@@ -88,83 +88,88 @@ const HomePage = () => {
               Enter the amount and user id to make a payment.
             </p>
           </div>
+          {MessageType === "success" ? (
+            <PaymentSuccess />
+          ) : (
+            <form
+              className="rounded-3xl border border-white/10 bg-white p-6 text-slate-900 shadow-2xl animate-fade-up shadow-black/25 sm:p-8"
+              onSubmit={SubmitPayment}
+            >
+              <div className="mb-7">
+                <p className="text-sm font-semibold text-emerald-600">
+                  New payment
+                </p>
+                <h2 className="mt-1 text-2xl font-black tracking-tight">
+                  Send funds
+                </h2>
+              </div>
 
-          <form
-            className="rounded-3xl border border-white/10 bg-white p-6 text-slate-900 shadow-2xl animate-fade-up shadow-black/25 sm:p-8"
-            onSubmit={SubmitPayment}
-          >
-            <div className="mb-7">
-              <p className="text-sm font-semibold text-emerald-600">
-                New payment
-              </p>
-              <h2 className="mt-1 text-2xl font-black tracking-tight">
-                Send funds
-              </h2>
-            </div>
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <label
+                    htmlFor="amount"
+                    className="text-sm font-semibold text-slate-700"
+                  >
+                    Amount
+                  </label>
+                  <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-emerald-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-500/10">
+                    <span className="pl-4 text-lg font-bold text-emerald-600">
+                      $
+                    </span>
+                    <input
+                      id="amount"
+                      name="amount"
+                      type="number"
+                      value={Amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                      required
+                      className="w-full bg-transparent px-3 py-3.5 text-lg font-semibold outline-none placeholder:text-slate-300"
+                    />
+                  </div>
+                </div>
 
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <label
-                  htmlFor="amount"
-                  className="text-sm font-semibold text-slate-700"
-                >
-                  Amount
-                </label>
-                <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-emerald-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-emerald-500/10">
-                  <span className="pl-4 text-lg font-bold text-emerald-600">
-                    $
-                  </span>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="user-id"
+                    className="text-sm font-semibold text-slate-700"
+                  >
+                    User ID
+                  </label>
                   <input
-                    id="amount"
-                    name="amount"
-                    type="number"
-                    value={Amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    min="0"
-                    step="0.01"
-                    placeholder="0.00"
+                    id="user-id"
+                    name="userId"
+                    value={UserID}
+                    onChange={(e) => setUserID(e.target.value)}
+                    type="text"
+                    placeholder="Enter user ID"
                     required
-                    className="w-full bg-transparent px-3 py-3.5 text-lg font-semibold outline-none placeholder:text-slate-300"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition placeholder:text-slate-400 hover:border-emerald-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                   />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label
-                  htmlFor="user-id"
-                  className="text-sm font-semibold text-slate-700"
-                >
-                  User ID
-                </label>
-                <input
-                  id="user-id"
-                  name="userId"
-                  value={UserID}
-                  onChange={(e) => setUserID(e.target.value)}
-                  type="text"
-                  placeholder="Enter user ID"
-                  required
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition placeholder:text-slate-400 hover:border-emerald-300 focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
-                />
-              </div>
-            </div>
-
-            <p
-              className={`text-[10px] ${MessageType === "success" ? "text-emerald-600" : "text-red-500"
+              <p
+                className={`text-[10px] ${
+                  MessageType === "success"
+                    ? "text-emerald-600"
+                    : "text-red-500"
                 }`}
-              role="status"
-            >
-              {Message}
-            </p>
+                role="status"
+              >
+                {Message}
+              </p>
 
-
-            <button
-              type="submit"
-              className="mt-7 w-full rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:-translate-y-0.5 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/25 active:translate-y-0"
-            >
-              Submit payment
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="mt-7 w-full rounded-xl bg-emerald-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition hover:-translate-y-0.5 hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/25 active:translate-y-0"
+              >
+                Submit payment
+              </button>
+            </form>
+          )}
         </section>
       </main>
     </div>
