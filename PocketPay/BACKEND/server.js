@@ -130,6 +130,15 @@ app.post("/payments", paymentsValidation, (req, res) => {
   });
 });
 
+app.get("/transactions", (req, res) => {
+  const userId = Number(req.query.userId);
+
+  const userHistory = transactionHistory.filter(
+    (user) => user.senderId === userId || user.receiverId === userId,
+  );
+  res.json(userHistory);
+});
+
 app.use(errMiddleware);
 
 app.listen(5000, () => {

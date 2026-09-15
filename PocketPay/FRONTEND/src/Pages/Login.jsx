@@ -99,7 +99,6 @@ const Login = () => {
                 name="password"
                 placeholder="Create a password"
                 autoComplete="new-password"
-                minLength="8"
                 required
               />
             </div>
